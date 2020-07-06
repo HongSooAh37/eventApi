@@ -1,11 +1,18 @@
 package test.study.demo.events;
 
-import org.assertj.core.api.AssertionsForClassTypes;
+import junitparams.JUnitParamsRunner;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.runner.RunWith;
+
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-
+@RunWith(JUnitParamsRunner.class)
 public class EventTest {
 
     @Test
@@ -33,67 +40,51 @@ public class EventTest {
         assertThat(event.getDescription()).isNotNull();
     }
 
-    @Test
-    public void testFree(){
-        //given 1
+    @ParameterizedTest
+    @MethodSource
+    public void testFree(int basePrice, int maxPrice, boolean isFree){
+        //Given
         Event event = Event.builder()
-                .basePrice(0)
-                .maxPrice(0)
+                .basePrice(basePrice)
+                .maxPrice(maxPrice)
                 .build();
-
-        //when
+        //When
         event.update();
 
-        //then
-        assertThat(event.isFree()).isTrue();
-
-        //given2
-        event = Event.builder()
-                .basePrice(100)
-                .maxPrice(0)
-                .build();
-
-        //when
-        event.update();
-
-        //then
-        assertThat(event.isFree()).isFalse();
-
-
-        //given3
-        event = Event.builder()
-                .basePrice(0)
-                .maxPrice(100)
-                .build();
-
-        //when
-        event.update();
-
-        //then
-        assertThat(event.isFree()).isFalse();
+        //Then
+        assertThat(event.isFree()).isEqualTo(isFree);
     }
 
-    @Test
-    public void testoffLine(){
-        //given3
-        Event event = Event.builder()
-                .location("여의도")
-                .build();
-
-        //when
-        event.update();
-        //then
-        AssertionsForClassTypes.assertThat(event.isOffline()).isTrue();
-
-        //given4
-        event = Event.builder()
-                .build();
-        //when
-        event.update();
-
-        //then
-        AssertionsForClassTypes.assertThat(event.isOffline()).isFalse();
+    private static Stream<Arguments> testFree() {
+        return Stream.of(
+                Arguments.of(0,0,true),
+                Arguments.of(0,100,false),
+                Arguments.of(100,0,false),
+                Arguments.of(100,100,false)
+        );
     }
 
+
+    @ParameterizedTest
+    @MethodSource
+    public void testOffline(String location, boolean isOffline){
+        //Given
+        Event event = Event.builder()
+                .location(location)
+                .build();
+        //When
+        event.update();
+
+        //Then
+        assertThat(event.isOffline()).isEqualTo(isOffline);
+    }
+
+    private static Stream<Arguments> testOffline() {
+        return Stream.of(
+                Arguments.of("강남역", true),
+                Arguments.of(null, false),
+                Arguments.of("", false)
+        );
+    }
 
 }
