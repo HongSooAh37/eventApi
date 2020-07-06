@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.modelmapper.internal.Errors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -23,13 +25,20 @@ public class EventController {
     @Autowired
     ModelMapper modelMapper;
 
-    @PostMapping
-    public ResponseEntity createEvent(@RequestBody EventDto eventDto){
+    public EventController(EventRepository eventRepository, ModelMapper modelMapper){
+        this.eventRepository = eventRepository;
+        this.modelMapper = modelMapper;
+    }
 
+    @PostMapping
+    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors){
+        if(errors.hasErrors()){
+            return ResponseEntity.badRequest().build();
+        }
         Event event = modelMapper.map(eventDto, Event.class);
         Event newEvent = this.eventRepository.save(event);
         URI createdUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
-        event.setId(10);
         return ResponseEntity.created(createdUri).body(event);
+
     }
 }

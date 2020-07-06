@@ -67,7 +67,7 @@ public class EventControllerTests {
 
 
     @Test
-    public void createEvent_bad_request() throws Exception {
+    public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(10)
                 .name("Srping")
@@ -92,5 +92,15 @@ public class EventControllerTests {
                 .andExpect(status().isBadRequest())
         ;
 
+    }
+
+    @Test
+    public void createEvent_Bad_Request_Empty_Input() throws Exception {
+        EventDto eventDto = EventDto.builder().build();
+
+        this.mockMvc.perform(post("/api/events/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(eventDto)))
+                .andExpect(status().isBadRequest());
     }
 }
