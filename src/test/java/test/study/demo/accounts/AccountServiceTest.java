@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,25 +30,29 @@ public class AccountServiceTest {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void findByUsername(){
-        String username = "test@mail.com";
-        String password = "test";
+        String username = "SUA01@email.com";
+        String password = "SUA01";
 
         Account account = Account.builder()
                 .email(username)
                 .password(password)
                 .roles(Set.of(AccountRole.ADMIN,AccountRole.USER))
                 .build();
-        this.accountRepository.save(account);
+       // this.accountRepository.save(account);
+        this.accountService.saveAccount(account);
 
         UserDetailsService userDetailsService = accountService;
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        assertThat(userDetails.getPassword()).isEqualTo(password);
+        assertThat(this.passwordEncoder.matches(password, userDetails.getPassword())).isTrue();
 
     }
 
@@ -67,7 +72,7 @@ public class AccountServiceTest {
             assertThat(e.getMessage()).containsSequence(username);
         }*/
 
-        String username = "randome@mail.com";
+        String username = "randome@email.com";
         expectedException.expect(UsernameNotFoundException.class);
         expectedException.expectMessage(Matchers.containsString(username));
 
