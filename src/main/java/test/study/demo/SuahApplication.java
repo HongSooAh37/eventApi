@@ -12,8 +12,4 @@ public class SuahApplication {
         SpringApplication.run(SuahApplication.class, args);
     }
 
-    @Bean
-    public ModelMapper modelMapper(){
-        return new ModelMapper();
-    }
 }
