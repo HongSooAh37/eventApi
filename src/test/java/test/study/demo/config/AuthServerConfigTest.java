@@ -2,14 +2,10 @@ package test.study.demo.config;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import test.study.demo.accounts.Account;
-import test.study.demo.accounts.AccountRole;
 import test.study.demo.accounts.AccountService;
 import test.study.demo.common.AppProperties;
 import test.study.demo.common.BaseControllerTest;
 import test.study.demo.common.TestDescription;
-
-import java.util.Set;
 
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -38,7 +34,7 @@ public class AuthServerConfigTest extends BaseControllerTest {
 
         this.mockMvc.perform(post("/oauth/token")
                         .with(httpBasic(appProperties.getClientId(),appProperties.getClientSecret()))
-                        .param("username",appProperties.getUserUsername())     // 이부분을 정의 안해줄 경우 : missing grant type 400 error 발생
+                        .param("username",appProperties.getUserUsername())     // 이부분을 정의 안해줄 경우 : missing  400 error 발생
                         .param("password",appProperties.getUserPassword())
                         .param("grant_type","password"))
                 .andDo(print())

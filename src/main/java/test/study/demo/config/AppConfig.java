@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import test.study.demo.accounts.Account;
-import test.study.demo.accounts.AccountRepository;
 import test.study.demo.accounts.AccountRole;
 import test.study.demo.accounts.AccountService;
 import test.study.demo.common.AppProperties;
@@ -44,7 +43,7 @@ public class AppConfig {
                 Account admin = Account.builder()
                         .email(appProperties.getAdminUsername())
                         .password(appProperties.getAdminPassword())
-                        .roles(Set.of(AccountRole.ADMIN,AccountRole.USER))
+                        .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                         .build();
                 accountService.saveAccount(admin);
 

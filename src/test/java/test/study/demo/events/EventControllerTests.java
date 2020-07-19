@@ -156,7 +156,7 @@ public class EventControllerTests extends BaseControllerTest {
 
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
                 .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
-                .param("username", appProperties.getUserUsername())     // 이부분을 정의 안해줄 경우 : missing grant type 400 error 발생
+                .param("username", appProperties.getUserUsername())     // 이부분을 정의 안해줄 경우 : missing  400 error 발생
                 .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 

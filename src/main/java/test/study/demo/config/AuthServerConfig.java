@@ -39,7 +39,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        //db  에서 관리하는것이 이상적이다
         clients.inMemory()
                 .withClient(appProperties.getClientId())
                 .authorizedGrantTypes("password","refresh_token")
@@ -48,6 +47,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 .accessTokenValiditySeconds(10 * 60)
                 .refreshTokenValiditySeconds(6 * 10 * 60);
     }
+
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
