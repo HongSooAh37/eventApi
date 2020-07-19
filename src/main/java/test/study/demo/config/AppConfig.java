@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import test.study.demo.accounts.Account;
+import test.study.demo.accounts.AccountRepository;
 import test.study.demo.accounts.AccountRole;
 import test.study.demo.accounts.AccountService;
+import test.study.demo.common.AppProperties;
 
 import java.util.Set;
 
@@ -34,14 +36,24 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account auth = Account.builder()
-                        .email("SUA01@email.com")
-                        .password("SUA01")
-                        .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
+                        .roles(Set.of(AccountRole.ADMIN,AccountRole.USER))
                         .build();
-                accountService.saveAccount(auth);
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccountRole.USER))
+                        .build();
+                accountService.saveAccount(user);
             }
         };
     }

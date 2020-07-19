@@ -14,6 +14,7 @@ import test.study.demo.accounts.Account;
 import test.study.demo.accounts.AccountRepository;
 import test.study.demo.accounts.AccountRole;
 import test.study.demo.accounts.AccountService;
+import test.study.demo.common.AppProperties;
 import test.study.demo.common.BaseControllerTest;
 import test.study.demo.common.TestDescription;
 
@@ -43,6 +44,9 @@ public class EventControllerTests extends BaseControllerTest {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    AppProperties appProperties;
 
     @Before
     public void setUp(){
@@ -143,23 +147,17 @@ public class EventControllerTests extends BaseControllerTest {
 
     private String getAccessToken() throws Exception {
 
-        String username = "sua001@email.com";
-        String password = "sua001";
-
         Account sua = Account.builder()
-                .email(username)
-                .password(password)
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
                 .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                 .build();
         this.accountService.saveAccount(sua);
 
-        String clientId     = "myApp";
-        String clientSecret = "pass";
-
         ResultActions perform = this.mockMvc.perform(post("/oauth/token")
-                .with(httpBasic(clientId, clientSecret))
-                .param("username", username)     // 이부분을 정의 안해줄 경우 : missing grant type 400 error 발생
-                .param("password", password)
+                .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+                .param("username", appProperties.getUserUsername())     // 이부분을 정의 안해줄 경우 : missing grant type 400 error 발생
+                .param("password", appProperties.getUserPassword())
                 .param("grant_type", "password"));
 
         var responseBody = perform.andReturn().getResponse().getContentAsString();

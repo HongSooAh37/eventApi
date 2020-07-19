@@ -14,9 +14,10 @@ public class Account {
     @GeneratedValue
     private Integer id;
 
-    private String password;
-
+    @Column(unique = true)
     private String email;
+
+    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
